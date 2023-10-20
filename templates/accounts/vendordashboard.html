@@ -1,11 +1,113 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-
-<h4>Welcome {{user.username}}</h4>
-
-<p>This is a {{user.get_role}}</p>
-
+<!-- Main Section Start -->
+<div class="main-section">
+    {% include 'includes/cover.html' %}
+    <div class="page-section account-header buyer-logged-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- Load the sidebar -->
+                    {% include 'includes/v_sidebar.html' %}
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            <h1 class="section-title">Overview</h1>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="dashboard-card">
+                                        <div class="card-header">
+                                            Total Orders
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <a href="#"><span class="card-value">522</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="dashboard-card">
+                                        <div class="card-header">
+                                            Total Revenue
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <a href="#"><span class="card-value">₹ 52,542</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="dashboard-card">
+                                        <div class="card-header">
+                                            This Month
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <a href="#"><span class="card-value">₹ 123</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="element-title">
+                                <h2 class="section-title">Recent Orders</h2>
+                                <div class="right-filters row pull-right">
+                                    <div class="col-lg-6 col-md-6 col-xs-6">
+                                        <div class="input-field">
+                                            <select class="chosen-select-no-single">
+                                                <option selected="selected" value="">Select Order Status</option>
+                                                <option value="Processing">Processing</option>
+                                                <option value="Cancelled">Cancelled</option>
+                                                <option value="Completed">Completed</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="user-orders-list">
+                                <div class="responsive-table">
+                                    <ul class="table-generic">
+                                        <li class="order-heading-titles">
+                                            <div>Order ID</div>
+                                            <div>Date</div>
+                                            <div>Total Price</div>
+                                            <div>Charges</div>
+                                            <div>Received</div>
+                                            <div>Status</div>
+                                        </li>
+                                        <li class="order-item">
+                                            <div><a href="#" data-toggle="modal" data-target="#order-det-22606">Order-22606</a></div>
+                                            <div>Apr 9, 2020</div>
+                                            <div>₹ 38.99</div>
+                                            <div>₹ 3.90</div>
+                                            <div>₹ 35.09</div>
+                                            <div><span class="status completed">Completed</span></div>
+                                        </li>
+                                        <li class="order-item">
+                                            <div><a href="#" data-toggle="modal" data-target="#order-det-22606">Order-22583</a></div>
+                                            <div>Apr 9, 2020</div>
+                                            <div>₹ 26.22</div>
+                                            <div>₹ 2.62</div>
+                                            <div>₹ 23.60</div>
+                                            <div><span class="status processing">Processing</span></div>
+                                        </li>
+                                        <li class="order-item">
+                                            <div><a href="#" data-toggle="modal" data-target="#order-det-22606">Order-22493</a></div>
+                                            <div>Apr 2, 2020</div>
+                                            <div>₹ 28.24</div>
+                                            <div>₹ 2.82</div>
+                                            <div>₹ 25.42</div>
+                                            <div><span class="status completed">Completed</span></div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Section End -->
 {% include 'includes/alerts.html' %}
-
 {% endblock %}
