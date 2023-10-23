@@ -1,6 +1,7 @@
 from django.urls import path, include
 from . import views
 
+
 urlpatterns = [
     path('',views.myAccount),
     path('registerUser/', views.registerUser, name = 'registerUser'),
@@ -19,4 +20,5 @@ urlpatterns = [
     path('reset_password/', views.reset_password, name='reset_password'),
 
     path('vendor/',include('Medicine_Vendor.urls')),
+
 ]
