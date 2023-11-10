@@ -7,7 +7,7 @@ from .models import Vendor
 from django.contrib import messages
 from accounts.views import check_role_vendor
 from menu.models import Category,Medicine_lobby
-from menu.forms import CategoryForm
+from menu.forms import CategoryForm,Medicine_lobbyForm
 from django.template.defaultfilters import slugify
 
 
@@ -70,6 +70,8 @@ def Medicine_by_category(request,pk=None):
     }
     return render(request, 'vendor/Medicine_by_category.html',context)
 
+@login_required(login_url ='login')
+@user_passes_test(check_role_vendor)
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -90,6 +92,8 @@ def add_category(request):
     }
     return render(request, 'vendor/add_category.html',context)
 
+@login_required(login_url ='login')
+@user_passes_test(check_role_vendor)
 def edit_category(request,pk=None):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -112,8 +116,71 @@ def edit_category(request,pk=None):
     }
     return render(request,'vendor/edit_category.html', context)
 
+@login_required(login_url ='login')
+@user_passes_test(check_role_vendor)
 def delete_category(request, pk=None):
     category = get_object_or_404(Category,pk=pk)
     category.delete()
-    messages.success(request,'Category hs been deleted successfully!')
+    messages.success(request,'Category has been deleted successfully!')
     return redirect('menu_builder')
+
+@login_required(login_url ='login')
+@user_passes_test(check_role_vendor)
+def add_med(request):
+    if request.method == 'POST':
+        form = Medicine_lobbyForm(request.POST, request.FILES)
+        if form.is_valid():
+            Medicine_title = form.cleaned_data['Medicine_title']
+            med = form.save(commit=False)
+            med.vendor = get_vendor(request)
+            med.slug = slugify(Medicine_title)
+            form.save()
+            messages.success(request,'Medicine added successfully!')
+            return redirect('Medicine_by_category',med.category.id)
+        else:
+            print(form.errors)
+    else:
+        form = Medicine_lobbyForm()
+        form.fields['category'].queryset = Category.objects.filter(vendor = get_vendor(request))
+        context = {
+            'form': form,
+        }
+
+    return render(request, 'vendor/add_med.html', context)
+
+
+
+
+@login_required(login_url ='login')
+@user_passes_test(check_role_vendor)
+def edit_med(request,pk=None):
+    med = get_object_or_404(Medicine_lobby, pk=pk)
+    if request.method == 'POST':
+        form = Medicine_lobbyForm(request.POST,request.FILES, instance=med)
+        if form.is_valid():
+            Medicine_title = form.cleaned_data['Medicine_title']
+            med = form.save(commit=False)
+            med.vendor = get_vendor(request)
+            med.slug = slugify(Medicine_title)
+            form.save()
+            messages.success(request,'Medicines list updated successfully!')
+            return redirect('Medicine_by_category',med.category.id)
+        else:
+            print(form.errors)
+    else:
+        form = Medicine_lobbyForm(instance=med)
+        form.fields['category'].queryset = Category.objects.filter(vendor = get_vendor(request))
+    context = {
+        'form':form,
+        'med':med,
+    }
+    return render(request,'vendor/edit_med.html', context)
+
+
+@login_required(login_url ='login')
+@user_passes_test(check_role_vendor)
+def delete_med(request, pk=None):
+    med = get_object_or_404(Medicine_lobby,pk=pk)
+    med.delete()
+    messages.success(request,'Med has been deleted successfully!')
+    return redirect('Medicine_by_category',med.category.id)
