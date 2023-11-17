@@ -32,7 +32,7 @@
                                     <td class="text-left"><img src="{{Med.image.url}}" alt="Med Image" width="100"></td>
                                     <td class="text-left">
                                         <a href=""><p class="mb-0 font-weight-bold">{{ Med }}</p>
-                                        <small class="text-muted">{{cat.description}}</small> </a>
+                                            <small class="text-muted" style="line-height: 1.2; max-width: 100px; padding-right: -10px;">{{ cat.description }}</small>
                                     </td>
                                     <td>
                                         {% if Med.is_available %}
@@ -50,7 +50,7 @@
                               {% else %}
                               <h5 class="text-center">No Med items found.</h5>
                               <div class="text-center">
-                                <a href="#" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Add Food</a>
+                                <a href="{% url 'add_med' %}" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Add Med</a>
                               </div>
                             {% endif %}
                         </div>

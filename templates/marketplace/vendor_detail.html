@@ -95,7 +95,7 @@
                                 <div class="menu-itam-holder">
                                     
                                     <div id="menu-item-list-6272" class="menu-itam-list">
-                                        
+                                        {% if user.is_authenticated %}
                                         {% for category in categories %}
                                         <div class="element-title" id="menu-category-2">
                                             <h5 class="text-color">{{ category }}</h5>
@@ -107,20 +107,27 @@
                                                 <div class="image-holder"><img src="{{ med.image.url }}" alt=""></div>
                                                 <div class="text-holder">
                                                     <h6>{{ med }}</h6>
-                                                    <span>{{ med.description }}</span>
+                                                    
+                                                    <span class="short-description">{{ med.description|truncatechars:50 }}</span>
                                                 </div>
                                                 <div class="price-holder">
                                                     <span class="price">₹{{ med.price }}</span>
-                                                    <a href="#" class="restaurant-add-menu-btn"><i class="icon-plus4 text-color"></i></a>
-                                                    <span id="add-menu-loader-10"></span>
+                                                    <a href="#" class="decrease_cart" data-id="{{ med.id  }}" data-url="{% url 'decrease_cart' med.id %}" style="margin-right: 28px;"><i class="icon-minus text-color"></i></a>
+                                                    <label id="qty-{{med.id}}">0</label>
+                                                    <a href="#" class="add_to_cart" data-id="{{ med.id  }}" data-url="{% url 'add_to_cart' med.id %}"><i class="icon-plus4 text-color"></i></a>
                                                 </div>
                                             </li>
                                             {% endfor %}                                         
                                         </ul>
                                         {% endfor %}
-
+                                        {% endif %}
                                         
                                     </div>
+                                    {% for item in cart_items %}
+                                    <span id="qty-{{item.medlist.id}}" class="item_qty d-none" data-qty="{{ item.quantity }}">
+                                        {{ item.quantity }}
+                                    </span>
+                                    {% endfor %}
                                 </div>
                             </div>
                             
