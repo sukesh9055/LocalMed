@@ -4,7 +4,8 @@ from Medicine_Vendor.models import Vendor
 from marketplace.models import Cart
 from menu.models import Category, Medicine_lobby
 from django.db.models import Prefetch
-from .context_processors import get_cart_counter
+from .context_processors import get_cart_counter,get_cart_amounts
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def marketplace(request):
@@ -54,10 +55,10 @@ def add_to_cart(request, med_id):
                     #increase cart quantity
                     chkCart.quantity += 1
                     chkCart.save()
-                    return JsonResponse({'status':'Success','message':'increased cart quantity','cart_counter': get_cart_counter(request), 'qty':chkCart.quantity})
+                    return JsonResponse({'status':'Success','message':'increased cart quantity','cart_counter': get_cart_counter(request), 'qty':chkCart.quantity,'cart_amount':get_cart_amounts(request)})
                 except:
                     chkCart=Cart.objects.create(user=request.user, medlist=medlist, quantity=1)
-                    return JsonResponse({'status':'Success','message':'Added the med to cart','cart_counter': get_cart_counter(request), 'qty':chkCart.quantity})
+                    return JsonResponse({'status':'Success','message':'Added the med to cart','cart_counter': get_cart_counter(request), 'qty':chkCart.quantity,'cart_amount':get_cart_amounts(request)})
             except:
                 return JsonResponse({'status':'Failed','message':'This med does not exist'})
         else:
@@ -80,7 +81,7 @@ def decrease_cart(request,med_id):
                     else:
                         chkCart.delete()
                         chkCart.quantity = 0
-                    return JsonResponse({'status':'Success','cart_counter': get_cart_counter(request), 'qty':chkCart.quantity})
+                    return JsonResponse({'status':'Success','cart_counter': get_cart_counter(request), 'qty':chkCart.quantity,'cart_amount':get_cart_amounts(request)})
                 except:
                     return JsonResponse({'status':'Failed','message':'You do not have med to cart'})
             except:
@@ -89,6 +90,29 @@ def decrease_cart(request,med_id):
             return JsonResponse({'status':'Failed','message':'Invalid login'})
     else:
         return JsonResponse({'status':'login_required','message':'Please login to continue'})
+
+@login_required(login_url = 'login')
+def cart(request):
+    cart_items=Cart.objects.filter(user=request.user).order_by('created_at')
+    context={
+        'cart_items':cart_items,
+    }
+    return render(request, 'marketplace/cart.html',context)
+
+def delete_cart(request,cart_id):
+    if request.user.is_authenticated:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            try:
+                #check if cart item exists
+                cart_item = Cart.objects.get(user=request.user,id=cart_id)
+                if cart_item:
+                    cart_item.delete()
+                    return JsonResponse({'status':'Success','message':'Cart item has been deleted','cart_counter': get_cart_counter(request),'cart_amount':get_cart_amounts(request)})
+            except:
+                return JsonResponse({'status':'Failed','message':'This med does not exist'})
+        else:
+            return JsonResponse({'status':'Failed','message':'Invalid Request'})
+
 
 
 
