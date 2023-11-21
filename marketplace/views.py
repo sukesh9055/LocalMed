@@ -6,6 +6,7 @@ from menu.models import Category, Medicine_lobby
 from django.db.models import Prefetch
 from .context_processors import get_cart_counter,get_cart_amounts
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 # Create your views here.
 
 def marketplace(request):
@@ -114,5 +115,27 @@ def delete_cart(request,cart_id):
             return JsonResponse({'status':'Failed','message':'Invalid Request'})
 
 
+def search(request):
+    address = request.GET['address']
+    latitude = request.GET['lat']
+    longitude = request.GET['lng']
+    radius = request.GET['radius']
+    med_clc_name = request.GET['med_clc_name']
 
+    
+    fetch_vendor_by_medlists = Medicine_lobby.objects.filter(Medicine_title__icontains=med_clc_name,is_available=True).values_list('vendor',flat=True)
+    
+    vendors =Vendor.objects.filter(Q(id__in=fetch_vendor_by_medlists) | Q(vendor_name__icontains=med_clc_name, is_approved=True, user__is_active=True))
+
+    
+    vendor_count = vendors.count()
+    context={
+        'vendors':vendors,
+        'vendor_count':vendor_count,
+        'fetch_vendor_by_medlists':fetch_vendor_by_medlists,
+    }
+
+
+    
+    return render(request, 'marketplace/listings.html',context) 
 
